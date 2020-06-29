@@ -16,7 +16,7 @@ const cacheSchema = new Schema(
     value: String,
     ttl: { type: Number, default: config.ttl },
   },
-  { timestamps: true, capped: { size: 5000, max: 5000 } }
+  { timestamps: true, capped: { size: 5000, max: config.maxCacheData } }
 )
 
 const Cache = model<ICache, ICacheModel>('Cache', cacheSchema)

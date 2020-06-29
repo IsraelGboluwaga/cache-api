@@ -15,4 +15,5 @@ export const config = {
     query_limit: 100,
   } as IMongo,
   ttl: (process.env.TTL || 30 * 3600) as number,
+  maxCacheData: (process.env.MAX_CACHE_DATA || 50) as number,
 }
