@@ -5,6 +5,7 @@ import * as CacheService from '../src/api/services/cacheService'
 
 import { server } from './../setup/www'
 import { Cache, ICache } from 'src/api/models/Cache'
+import { values } from 'lodash'
 const factory = cacheFactory()
 
 describe('Cache', () => {
@@ -57,6 +58,29 @@ describe('Cache', () => {
     })
   })
 
+  describe ('POST Create entry', () => {
+    it('should create entry successfully', async (done: () => any) => {
+      const key = 'keyz'
+      const value = 'valuuuueee'
+      await CacheService.createPair({ key, value } as ICache)
+      const exists = CacheService.fetchValueByKey(key)
+      expect(exists).to.be.a('string')
+      expect(exists).to.equal(value)
+      done()
+    })
+
+    it('should throw an error if key previously exists', async (done: () => any) => {
+      const key = 'keyz'
+      const value = 'valuuuueee'
+      await CacheService.createPair({ key, value } as ICache)
+      try {
+        await CacheService.createPair({ key, value } as ICache)
+      } catch(e) {
+        expect(e.message).to.equal('Value already exists for key. Kindly make update call.')
+      }
+    })
+  })
+
   describe('PUT Update entry by key', () => {
     it('should update entry successfully', async (done: () => any) => {
       const key = 'keyz'
@@ -76,7 +100,7 @@ describe('Cache', () => {
       const key = 'keyz'
       const value = 'valuuuueee'
       await CacheService.createPair({ key, value } as ICache)
-      const deleted = await CacheService.deleteEntry(key)
+      await CacheService.deleteEntry(key)
       const entry = await Cache.findOne({ key })
       expect(entry).to.not.be.null
       done()
@@ -89,7 +113,7 @@ describe('Cache', () => {
       const value = 'valuuuueee'
       await CacheService.createPair({ key, value } as ICache)
       await CacheService.createPair({ key: key + 'as', value: value + 'as' } as ICache)
-      const fetchAllData = await CacheService.deleteAll()
+      await CacheService.deleteAll()
       const entries = await Cache.find({})
       expect(entries).to.not.be.an('array')
       expect(entries).to.be.empty

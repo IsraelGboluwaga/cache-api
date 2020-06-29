@@ -9,13 +9,13 @@ import {
   deleteAll,
 } from './controllers/cache.ctrl'
 
-const routes = (app: express.Application) => {
+const routes = (app: express.Router) => {
+  app.get('/keys', getAllKeys)
   app.get('/:key', getValueByKey)
   app.post('/key', createPair)
-  app.get('/keys', getAllKeys)
   app.put('/key', updateEntry)
-  app.delete('/:key', deleteEntry)
   app.delete('/keys', deleteAll)
+  app.delete('/:key', deleteEntry)
   return app
 }
 

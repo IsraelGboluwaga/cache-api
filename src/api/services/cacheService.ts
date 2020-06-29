@@ -56,14 +56,13 @@ const fetchAllKeys = async () => {
     map((each: ICache) => {
       const lastUpdated = moment(each.updatedAt)
       const condition = lastUpdated.diff(now, 'seconds') > each.ttl
-      return condition && each.key
+      return !condition && each.key
     })(all)
   )
 }
 
-const updateEntry = async ({ key, value }: { key: string; value: string }) => {
-  return await Cache.findOneAndUpdate({ key }, { value, ttl: config.ttl })
-}
+const updateEntry = async ({ key, value }: { key: string; value: string }) =>
+  await Cache.updateOne({ key }, { value, ttl: config.ttl })
 
 const deleteEntry = async (key?: string) => {
   if (!key) {
