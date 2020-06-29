@@ -4,7 +4,9 @@ import { config } from '../../config/settings'
 interface ICache extends Document {
   key: string
   value: string
-  ttl?: number
+  ttl: number
+  createdAt?: Date
+  updatedAt?: Date
 }
 interface ICacheModel extends Model<ICache> {}
 
