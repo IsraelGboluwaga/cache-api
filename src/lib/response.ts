@@ -3,7 +3,6 @@ import { constants } from './constants'
 
 const { SUCCESSFUL } = constants
 
-
 interface IData {
   data?: [] | string
   error: boolean
@@ -11,9 +10,14 @@ interface IData {
   errStack?: any
 }
 
-function respond(res: express.Response, httpCode: number, data: IData) {
+interface IRespond {
+  res: express.Response
+  data: IData
+  httpCode: number
+}
+
+function respond({ res, httpCode, data }: IRespond) {
   const response = {
-    code: httpCode,
     data: data.data,
     error: data.error,
     message: data.message,
@@ -25,20 +29,33 @@ function respond(res: express.Response, httpCode: number, data: IData) {
   return res.status(httpCode).send(response)
 }
 
-export const success = (res: express.Response, data: any, httpCode = 200) => {
+interface ISuccess {
+  res: express.Response
+  data: any
+  httpCode: number
+  message?: string
+}
+
+export const success = ({ res, data, message, httpCode }: ISuccess) => {
   const dataToSend: IData = {
     data,
     error: false,
     message: SUCCESSFUL,
   }
-  respond(res, httpCode, dataToSend)
+  respond({ res, httpCode, data: dataToSend })
 }
 
-export const failure = (res: express.Response, message: string, errStack: any, httpCode = 503) => {
+interface IFail {
+  res: express.Response
+  message: string
+  errStack?: any
+  httpCode: number
+}
+export const failure = ({ res, message, errStack, httpCode }: IFail) => {
   const dataToSend: IData = {
     error: true,
     message,
     errStack,
   }
-  respond(res, httpCode, dataToSend)
+  respond({ res, httpCode, data: dataToSend })
 }

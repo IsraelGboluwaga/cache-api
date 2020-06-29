@@ -1,4 +1,4 @@
-import * as mongoose from 'mongoose'
+import mongoose from 'mongoose'
 import { config } from './settings'
 import { logger } from './winston'
 
@@ -7,8 +7,8 @@ const connectionString =
     ? `mongodb://${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.db}`
     : `mongodb://${config.mongodb.username}:${config.mongodb.password}@${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.db}`
 
-const mongo = mongoose
-  .connect(connectionString, { useNewUrlParser: true })
+const mongo = () => mongoose
+  .connect(connectionString, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(db => {
     logger.info('Mongo Connection Established')
 
